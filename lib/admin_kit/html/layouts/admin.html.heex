@@ -1,0 +1,29 @@
+<div class="ak-layout">
+  <aside class="ak-sidebar">
+    <div class="ak-sidebar-header">
+      <h2 class="ak-sidebar-title">Admin</h2>
+    </div>
+    <nav class="ak-sidebar-nav">
+      <a href="/" class="ak-sidebar-link ak-sidebar-dashboard">Dashboard</a>
+    </nav>
+  </aside>
+
+  <main class="ak-main">
+    <div class="ak-flash-group">
+      <%= if msg = Phoenix.Flash.get(@flash, :info) do %>
+        <div class="ak-flash ak-flash-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">
+          <%= msg %>
+        </div>
+      <% end %>
+      <%= if msg = Phoenix.Flash.get(@flash, :error) do %>
+        <div class="ak-flash ak-flash-error" role="alert" phx-click="lv:clear-flash" phx-value-key="error">
+          <%= msg %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="ak-content">
+      <%= @inner_content %>
+    </div>
+  </main>
+</div>
