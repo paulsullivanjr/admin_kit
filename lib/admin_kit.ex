@@ -61,9 +61,21 @@ defmodule AdminKit do
 
   defmacro __before_compile__(_env) do
     quote do
+      @doc false
       def __resources__ do
         @admin_resources
         |> Enum.map(& &1.__admin_config__())
+      end
+
+      @doc false
+      # Compile-safe index of {plural_name, resource_module} tuples.
+      # Used by the router macro — no anonymous functions, just atoms.
+      def __resource_index__ do
+        @admin_resources
+        |> Enum.map(fn mod ->
+          config = mod.__admin_config__()
+          {config.plural_name, mod}
+        end)
       end
     end
   end
@@ -71,15 +83,16 @@ defmodule AdminKit do
   @doc "Register a custom field type at runtime."
   @spec register_field_type(atom(), module()) :: :ok
   def register_field_type(type_name, module) do
-    Application.put_env(:admin_kit, {:field_type, type_name}, module)
+    current = Application.get_env(:admin_kit, :custom_field_types, %{})
+    Application.put_env(:admin_kit, :custom_field_types, Map.put(current, type_name, module))
     :ok
   end
 
   @doc "Resolve a field type module by atom name."
   @spec field_type_module(atom()) :: module()
   def field_type_module(type) do
-    Application.get_env(:admin_kit, {:field_type, type}) ||
-      Map.fetch!(default_field_types(), type)
+    custom = Application.get_env(:admin_kit, :custom_field_types, %{})
+    Map.get(custom, type) || Map.fetch!(default_field_types(), type)
   end
 
   defp default_field_types do

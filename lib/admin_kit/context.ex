@@ -11,8 +11,8 @@ defmodule AdminKit.Context do
     fn_name = :"list_#{config.plural_name}"
 
     cond do
-      function_exported?(ctx, fn_name, 1) -> apply(ctx, fn_name, [params])
-      function_exported?(ctx, fn_name, 0) -> apply(ctx, fn_name, [])
+      has_function?(ctx, fn_name, 1) -> apply(ctx, fn_name, [params])
+      has_function?(ctx, fn_name, 0) -> apply(ctx, fn_name, [])
       true -> raise_missing(ctx, fn_name, "list_#{config.plural_name}(params) or list_#{config.plural_name}()")
     end
   end
@@ -21,7 +21,7 @@ defmodule AdminKit.Context do
   def get(%ResourceConfig{context: ctx} = config, id) do
     fn_name = :"get_#{config.singular_name}!"
 
-    unless function_exported?(ctx, fn_name, 1) do
+    unless has_function?(ctx, fn_name, 1) do
       raise_missing(ctx, fn_name, "get_#{config.singular_name}!(id)")
     end
 
@@ -32,7 +32,7 @@ defmodule AdminKit.Context do
   def create(%ResourceConfig{context: ctx} = config, attrs) do
     fn_name = :"create_#{config.singular_name}"
 
-    unless function_exported?(ctx, fn_name, 1) do
+    unless has_function?(ctx, fn_name, 1) do
       raise_missing(ctx, fn_name, "create_#{config.singular_name}(attrs)")
     end
 
@@ -43,7 +43,7 @@ defmodule AdminKit.Context do
   def update(%ResourceConfig{context: ctx} = config, record, attrs) do
     fn_name = :"update_#{config.singular_name}"
 
-    unless function_exported?(ctx, fn_name, 2) do
+    unless has_function?(ctx, fn_name, 2) do
       raise_missing(ctx, fn_name, "update_#{config.singular_name}(record, attrs)")
     end
 
@@ -54,7 +54,7 @@ defmodule AdminKit.Context do
   def delete(%ResourceConfig{context: ctx} = config, record) do
     fn_name = :"delete_#{config.singular_name}"
 
-    unless function_exported?(ctx, fn_name, 1) do
+    unless has_function?(ctx, fn_name, 1) do
       raise_missing(ctx, fn_name, "delete_#{config.singular_name}(record)")
     end
 
@@ -66,12 +66,17 @@ defmodule AdminKit.Context do
   def change(%ResourceConfig{context: ctx} = config, record, attrs \\ %{}) do
     fn_name = :"change_#{config.singular_name}"
 
-    if function_exported?(ctx, fn_name, 2) do
+    if has_function?(ctx, fn_name, 2) do
       apply(ctx, fn_name, [record, attrs])
     else
       # Fallback: try the schema's changeset function
       config.schema.changeset(record, attrs)
     end
+  end
+
+  defp has_function?(mod, fun, arity) do
+    Code.ensure_loaded!(mod)
+    function_exported?(mod, fun, arity)
   end
 
   defp raise_missing(ctx, fn_name, suggestion) do

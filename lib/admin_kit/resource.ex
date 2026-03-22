@@ -43,7 +43,6 @@ defmodule AdminKit.Resource do
     quote do
       import AdminKit.Resource, only: [resource: 2]
       @behaviour AdminKit.Resource
-      Module.register_attribute(__MODULE__, :admin_resource_config, persist: true)
     end
   end
 
@@ -62,21 +61,39 @@ defmodule AdminKit.Resource do
       import AdminKit.Resource.DSL
       unquote(block)
 
-      @admin_resource_config AdminKit.Resource.Compiler.compile(
-                               unquote(schema),
-                               @ak_context,
-                               @ak_fields || [],
-                               @ak_index_fields || [],
-                               @ak_form_fields || [],
-                               @ak_actions || [],
-                               @ak_scopes || [],
-                               @ak_searchable || [],
-                               @ak_per_page || 25,
-                               @ak_policy
-                             )
+      # Capture raw DSL values at compile time to use in the runtime function.
+      # We can't store anonymous functions in module attributes, so we build
+      # the config struct at runtime on first call instead.
+      @_ak_schema unquote(schema)
+      @_ak_ctx @ak_context
+      @_ak_raw_fields @ak_fields || []
+      @_ak_idx_fields @ak_index_fields || []
+      @_ak_frm_fields @ak_form_fields || []
+      @_ak_raw_actions @ak_actions || []
+      @_ak_raw_scopes @ak_scopes || []
+      @_ak_searchable @ak_searchable || []
+      @_ak_pp @ak_per_page || 25
+      @_ak_pol @ak_policy
+
+      # Validate at compile time (non-function checks)
+      AdminKit.Resource.Compiler.validate_compile_time!(@_ak_schema, @_ak_ctx)
 
       @doc false
-      def __admin_config__, do: @admin_resource_config
+      def __admin_config__ do
+        AdminKit.Resource.Compiler.compile(
+          @_ak_schema,
+          @_ak_ctx,
+          @_ak_raw_fields,
+          @_ak_idx_fields,
+          @_ak_frm_fields,
+          @_ak_raw_actions,
+          @_ak_raw_scopes,
+          @_ak_searchable,
+          @_ak_pp,
+          @_ak_pol,
+          __MODULE__
+        )
+      end
     end
   end
 end

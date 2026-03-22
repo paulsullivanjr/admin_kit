@@ -2,9 +2,11 @@ defmodule AdminKit.Live.DashboardLive do
   @moduledoc "Dashboard LiveView showing summary cards for each registered resource."
   use Phoenix.LiveView
 
+  alias AdminKit.Live.Helpers
+
   @impl true
   def mount(_params, session, socket) do
-    admin_module = get_admin_module(socket, session)
+    admin_module = Helpers.get_admin_module(socket, session)
     resources = admin_module.__resources__()
 
     {:ok,
@@ -35,12 +37,5 @@ defmodule AdminKit.Live.DashboardLive do
       </div>
     </div>
     """
-  end
-
-  defp get_admin_module(socket, session) do
-    case socket.private[:connect_info] do
-      %{metadata: %{admin_module: mod}} -> mod
-      _ -> Map.get(session, "admin_module") || raise "AdminKit: admin_module not found"
-    end
   end
 end

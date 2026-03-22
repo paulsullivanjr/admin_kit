@@ -2,11 +2,11 @@ defmodule AdminKit.Live.ResourceFormLive do
   @moduledoc "New/Edit LiveView for creating and updating resources."
   use Phoenix.LiveView
 
-  alias AdminKit.{Context, ResourceConfig}
+  alias AdminKit.{Context, Live.Helpers, ResourceConfig}
 
   @impl true
   def mount(_params, session, socket) do
-    config = get_resource_config(socket, session)
+    config = Helpers.get_resource_config(socket, session)
     {:ok, assign(socket, config: config)}
   end
 
@@ -134,10 +134,4 @@ defmodule AdminKit.Live.ResourceFormLive do
     end
   end
 
-  defp get_resource_config(socket, session) do
-    case socket.private[:connect_info] do
-      %{metadata: %{resource: config}} -> config
-      _ -> Map.get(session, "resource") || raise "AdminKit: resource config not found"
-    end
-  end
 end

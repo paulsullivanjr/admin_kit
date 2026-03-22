@@ -2,11 +2,11 @@ defmodule AdminKit.Live.ResourceShowLive do
   @moduledoc "Show LiveView for displaying a single resource with all visible fields."
   use Phoenix.LiveView
 
-  alias AdminKit.{Context, Field}
+  alias AdminKit.{Context, Field, Live.Helpers}
 
   @impl true
   def mount(_params, session, socket) do
-    config = get_resource_config(socket, session)
+    config = Helpers.get_resource_config(socket, session)
     {:ok, assign(socket, config: config)}
   end
 
@@ -95,10 +95,4 @@ defmodule AdminKit.Live.ResourceShowLive do
     mod.render_show(value, field)
   end
 
-  defp get_resource_config(socket, session) do
-    case socket.private[:connect_info] do
-      %{metadata: %{resource: config}} -> config
-      _ -> Map.get(session, "resource") || raise "AdminKit: resource config not found"
-    end
-  end
 end

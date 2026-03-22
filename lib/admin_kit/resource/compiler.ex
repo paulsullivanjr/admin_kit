@@ -5,6 +5,12 @@ defmodule AdminKit.Resource.Compiler do
 
   alias AdminKit.{ResourceConfig, Field, Action, Scope}
 
+  @doc "Validates schema and context at compile time (non-function checks only)."
+  def validate_compile_time!(schema, context) do
+    validate_schema!(schema)
+    validate_context!(context)
+  end
+
   def compile(
         schema,
         context,
@@ -15,14 +21,15 @@ defmodule AdminKit.Resource.Compiler do
         raw_scopes,
         searchable,
         per_page,
-        policy
+        policy,
+        resource_module
       ) do
     validate_schema!(schema)
     validate_context!(context)
 
     fields = build_fields(schema, raw_fields, index_fields, form_fields, searchable)
-    actions = build_actions(raw_actions)
-    scopes = build_scopes(raw_scopes)
+    actions = build_actions(raw_actions, resource_module)
+    scopes = build_scopes(raw_scopes, resource_module)
 
     %ResourceConfig{
       schema: schema,
@@ -41,7 +48,16 @@ defmodule AdminKit.Resource.Compiler do
   end
 
   defp validate_schema!(schema) do
-    unless is_atom(schema) and function_exported?(schema, :__schema__, 1) do
+    unless is_atom(schema) do
+      raise ArgumentError, """
+      AdminKit: #{inspect(schema)} does not appear to be an Ecto schema.
+      Make sure you pass the schema module, not a context module.
+      """
+    end
+
+    Code.ensure_compiled!(schema)
+
+    unless function_exported?(schema, :__schema__, 1) do
       raise ArgumentError, """
       AdminKit: #{inspect(schema)} does not appear to be an Ecto schema.
       Make sure you pass the schema module, not a context module.
@@ -84,11 +100,20 @@ defmodule AdminKit.Resource.Compiler do
     end)
   end
 
-  defp build_actions(raw_actions) do
+  defp build_actions(raw_actions, resource_module) do
     Enum.map(raw_actions, fn {name, opts} ->
-      unless Keyword.has_key?(opts, :handler) do
-        raise ArgumentError, "AdminKit: action #{inspect(name)} requires a :handler option"
-      end
+      # Resolve handler: either a _handler_fn reference to a generated function,
+      # or a direct :handler value (remote function reference like &Mod.fun/1)
+      handler =
+        case Keyword.get(opts, :_handler_fn) do
+          nil ->
+            Keyword.get(opts, :handler) ||
+              raise ArgumentError,
+                    "AdminKit: action #{inspect(name)} requires a :handler option"
+
+          fn_name ->
+            Function.capture(resource_module, fn_name, 1)
+        end
 
       %Action{
         name: name,
@@ -98,7 +123,7 @@ defmodule AdminKit.Resource.Compiler do
             :label,
             name |> to_string() |> String.replace("_", " ") |> String.capitalize()
           ),
-        handler: Keyword.fetch!(opts, :handler),
+        handler: handler,
         scope: Keyword.get(opts, :scope, :member),
         icon: Keyword.get(opts, :icon),
         confirm: Keyword.get(opts, :confirm),
@@ -107,12 +132,20 @@ defmodule AdminKit.Resource.Compiler do
     end)
   end
 
-  defp build_scopes(raw_scopes) do
+  defp build_scopes(raw_scopes, resource_module) do
     Enum.map(raw_scopes, fn {name, opts} ->
+      # Resolve filter: either a _filter_fn reference to a generated function,
+      # or a direct :filter value, or a default passthrough
+      filter =
+        case Keyword.get(opts, :_filter_fn) do
+          nil -> Keyword.get(opts, :filter, fn q -> q end)
+          fn_name -> Function.capture(resource_module, fn_name, 1)
+        end
+
       %Scope{
         name: name,
         label: Keyword.get(opts, :label, name |> to_string() |> String.capitalize()),
-        filter: Keyword.get(opts, :filter, fn q -> q end),
+        filter: filter,
         default: Keyword.get(opts, :default, false)
       }
     end)

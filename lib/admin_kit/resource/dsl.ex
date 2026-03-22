@@ -21,14 +21,41 @@ defmodule AdminKit.Resource.DSL do
   end
 
   defmacro action(name, opts) do
+    # Extract handler — if it's an anonymous function, generate a named
+    # wrapper so it can be stored in a module attribute.
+    {handler_ast, safe_opts} = Keyword.pop(opts, :handler)
+    handler_fn_name = :"__ak_action_handler_#{name}__"
+
     quote do
-      Module.put_attribute(__MODULE__, :ak_actions, {unquote(name), unquote(opts)})
+      defp unquote(handler_fn_name)(record), do: unquote(handler_ast).(record)
+
+      Module.put_attribute(
+        __MODULE__,
+        :ak_actions,
+        {unquote(name), [{:_handler_fn, unquote(handler_fn_name)} | unquote(safe_opts)]}
+      )
     end
   end
 
   defmacro scope(name, opts \\ []) do
-    quote do
-      Module.put_attribute(__MODULE__, :ak_scopes, {unquote(name), unquote(opts)})
+    {filter_ast, safe_opts} = Keyword.pop(opts, :filter)
+
+    if filter_ast do
+      filter_fn_name = :"__ak_scope_filter_#{name}__"
+
+      quote do
+        defp unquote(filter_fn_name)(query), do: unquote(filter_ast).(query)
+
+        Module.put_attribute(
+          __MODULE__,
+          :ak_scopes,
+          {unquote(name), [{:_filter_fn, unquote(filter_fn_name)} | unquote(safe_opts)]}
+        )
+      end
+    else
+      quote do
+        Module.put_attribute(__MODULE__, :ak_scopes, {unquote(name), unquote(safe_opts)})
+      end
     end
   end
 
