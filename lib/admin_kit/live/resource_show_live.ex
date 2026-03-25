@@ -29,7 +29,10 @@ defmodule AdminKit.Live.ResourceShowLive do
       <div class="ak-header">
         <h1 class="ak-page-title"><%= @page_title %></h1>
         <div class="ak-header-actions">
-          <.link navigate={"/#{@config.plural_name}/#{Map.get(@record, :id)}/edit"} class="ak-btn ak-btn-primary">
+          <.link
+            navigate={"/#{@config.plural_name}/#{Map.get(@record, :id)}/edit"}
+            class="ak-btn ak-btn-primary"
+          >
             Edit
           </.link>
           <.link navigate={"/#{@config.plural_name}"} class="ak-btn ak-btn-secondary">
@@ -37,7 +40,6 @@ defmodule AdminKit.Live.ResourceShowLive do
           </.link>
         </div>
       </div>
-
       <!-- Actions -->
       <%= if length(@config.actions) > 0 do %>
         <div class="ak-actions-bar">
@@ -53,7 +55,6 @@ defmodule AdminKit.Live.ResourceShowLive do
           <% end %>
         </div>
       <% end %>
-
       <!-- Fields -->
       <dl class="ak-detail-list">
         <%= for field <- show_fields(@config) do %>
@@ -94,5 +95,4 @@ defmodule AdminKit.Live.ResourceShowLive do
     mod = AdminKit.field_type_module(field.type)
     mod.render_show(value, field)
   end
-
 end

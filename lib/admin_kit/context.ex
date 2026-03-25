@@ -11,9 +11,18 @@ defmodule AdminKit.Context do
     fn_name = :"list_#{config.plural_name}"
 
     cond do
-      has_function?(ctx, fn_name, 1) -> apply(ctx, fn_name, [params])
-      has_function?(ctx, fn_name, 0) -> apply(ctx, fn_name, [])
-      true -> raise_missing(ctx, fn_name, "list_#{config.plural_name}(params) or list_#{config.plural_name}()")
+      has_function?(ctx, fn_name, 1) ->
+        apply(ctx, fn_name, [params])
+
+      has_function?(ctx, fn_name, 0) ->
+        apply(ctx, fn_name, [])
+
+      true ->
+        raise_missing(
+          ctx,
+          fn_name,
+          "list_#{config.plural_name}(params) or list_#{config.plural_name}()"
+        )
     end
   end
 
@@ -39,7 +48,8 @@ defmodule AdminKit.Context do
     apply(ctx, fn_name, [attrs])
   end
 
-  @spec update(ResourceConfig.t(), struct(), map()) :: {:ok, struct()} | {:error, Ecto.Changeset.t()}
+  @spec update(ResourceConfig.t(), struct(), map()) ::
+          {:ok, struct()} | {:error, Ecto.Changeset.t()}
   def update(%ResourceConfig{context: ctx} = config, record, attrs) do
     fn_name = :"update_#{config.singular_name}"
 

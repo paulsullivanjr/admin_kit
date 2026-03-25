@@ -13,6 +13,6 @@ defmodule AdminKit.TestApp.Router do
 
   scope "/admin" do
     pipe_through :browser
-    live_admin "/", AdminKit.TestApp.Admin
+    live_admin("/", AdminKit.TestApp.Admin)
   end
 end

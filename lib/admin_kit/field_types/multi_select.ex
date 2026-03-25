@@ -37,7 +37,13 @@ defmodule AdminKit.FieldTypes.MultiSelect do
     <div class="ak-checkbox-group">
       <%= for choice <- @choices do %>
         <label class="ak-checkbox-label">
-          <input type="checkbox" name={Phoenix.HTML.Form.input_name(@form, @field) <> "[]"} value={choice} checked={to_string(choice) in @current} class="ak-checkbox" />
+          <input
+            type="checkbox"
+            name={Phoenix.HTML.Form.input_name(@form, @field) <> "[]"}
+            value={choice}
+            checked={to_string(choice) in @current}
+            class="ak-checkbox"
+          />
           <%= humanize(choice) %>
         </label>
       <% end %>

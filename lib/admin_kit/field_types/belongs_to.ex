@@ -34,7 +34,12 @@ defmodule AdminKit.FieldTypes.BelongsTo do
     <select name={Phoenix.HTML.Form.input_name(@form, @field)} class="ak-input">
       <option value="">Select...</option>
       <%= for {label, val} <- @options do %>
-        <option value={val} selected={to_string(Phoenix.HTML.Form.input_value(@form, @field)) == to_string(val)}><%= label %></option>
+        <option
+          value={val}
+          selected={to_string(Phoenix.HTML.Form.input_value(@form, @field)) == to_string(val)}
+        >
+          <%= label %>
+        </option>
       <% end %>
     </select>
     """

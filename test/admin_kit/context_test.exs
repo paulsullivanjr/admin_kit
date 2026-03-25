@@ -30,7 +30,9 @@ defmodule AdminKit.ContextTest do
 
   describe "create/2" do
     test "creates a record with valid attrs", %{config: config} do
-      assert {:ok, user} = Context.create(config, %{name: "New User", email: "new@test.com", role: :viewer})
+      assert {:ok, user} =
+               Context.create(config, %{name: "New User", email: "new@test.com", role: :viewer})
+
       assert user.name == "New User"
     end
 

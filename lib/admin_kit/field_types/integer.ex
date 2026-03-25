@@ -30,7 +30,12 @@ defmodule AdminKit.FieldTypes.Integer do
     assigns = %{form: form, field: field.name}
 
     ~H"""
-    <input type="number" name={Phoenix.HTML.Form.input_name(@form, @field)} value={Phoenix.HTML.Form.input_value(@form, @field)} class="ak-input" />
+    <input
+      type="number"
+      name={Phoenix.HTML.Form.input_name(@form, @field)}
+      value={Phoenix.HTML.Form.input_value(@form, @field)}
+      class="ak-input"
+    />
     """
   end
 end

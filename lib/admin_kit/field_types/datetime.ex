@@ -30,7 +30,12 @@ defmodule AdminKit.FieldTypes.Datetime do
     assigns = %{form: form, field: field.name}
 
     ~H"""
-    <input type="datetime-local" name={Phoenix.HTML.Form.input_name(@form, @field)} value={format_input(Phoenix.HTML.Form.input_value(@form, @field))} class="ak-input" />
+    <input
+      type="datetime-local"
+      name={Phoenix.HTML.Form.input_name(@form, @field)}
+      value={format_input(Phoenix.HTML.Form.input_value(@form, @field))}
+      class="ak-input"
+    />
     """
   end
 

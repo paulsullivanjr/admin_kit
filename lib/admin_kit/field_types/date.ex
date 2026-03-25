@@ -30,7 +30,12 @@ defmodule AdminKit.FieldTypes.Date do
     assigns = %{form: form, field: field.name}
 
     ~H"""
-    <input type="date" name={Phoenix.HTML.Form.input_name(@form, @field)} value={Phoenix.HTML.Form.input_value(@form, @field)} class="ak-input" />
+    <input
+      type="date"
+      name={Phoenix.HTML.Form.input_name(@form, @field)}
+      value={Phoenix.HTML.Form.input_value(@form, @field)}
+      class="ak-input"
+    />
     """
   end
 end

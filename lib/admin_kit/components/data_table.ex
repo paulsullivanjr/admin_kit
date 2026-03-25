@@ -13,14 +13,21 @@ defmodule AdminKit.Components.DataTable do
           <tr>
             <%= if @selectable do %>
               <th class="ak-th ak-th-checkbox">
-                <input type="checkbox" phx-click="select_all" phx-target={@myself} checked={all_selected?(@selected_ids, @records)} />
+                <input
+                  type="checkbox"
+                  phx-click="select_all"
+                  phx-target={@myself}
+                  checked={all_selected?(@selected_ids, @records)}
+                />
               </th>
             <% end %>
             <%= for field <- ResourceConfig.index_fields(@config) do %>
               <th class="ak-th" phx-click="sort" phx-value-field={field.name} phx-target={@myself}>
                 <%= Field.label(field) %>
                 <%= if @sort_by == field.name do %>
-                  <span class="ak-sort-indicator"><%= if @sort_dir == :asc, do: "▲", else: "▼" %></span>
+                  <span class="ak-sort-indicator">
+                    <%= if @sort_dir == :asc, do: "▲", else: "▼" %>
+                  </span>
                 <% end %>
               </th>
             <% end %>
@@ -32,7 +39,13 @@ defmodule AdminKit.Components.DataTable do
             <tr class={"ak-tr #{if Map.get(record, :id) in @selected_ids, do: "ak-tr-selected"}"}>
               <%= if @selectable do %>
                 <td class="ak-td">
-                  <input type="checkbox" phx-click="select_row" phx-value-id={Map.get(record, :id)} phx-target={@myself} checked={Map.get(record, :id) in @selected_ids} />
+                  <input
+                    type="checkbox"
+                    phx-click="select_row"
+                    phx-value-id={Map.get(record, :id)}
+                    phx-target={@myself}
+                    checked={Map.get(record, :id) in @selected_ids}
+                  />
                 </td>
               <% end %>
               <%= for field <- ResourceConfig.index_fields(@config) do %>
@@ -41,9 +54,26 @@ defmodule AdminKit.Components.DataTable do
                 </td>
               <% end %>
               <td class="ak-td ak-actions">
-                <.link navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}"} class="ak-action-link">Show</.link>
-                <.link navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}/edit"} class="ak-action-link">Edit</.link>
-                <button phx-click="delete" phx-value-id={Map.get(record, :id)} data-confirm="Are you sure?" class="ak-action-link ak-action-danger">Delete</button>
+                <.link
+                  navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}"}
+                  class="ak-action-link"
+                >
+                  Show
+                </.link>
+                <.link
+                  navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}/edit"}
+                  class="ak-action-link"
+                >
+                  Edit
+                </.link>
+                <button
+                  phx-click="delete"
+                  phx-value-id={Map.get(record, :id)}
+                  data-confirm="Are you sure?"
+                  class="ak-action-link ak-action-danger"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           <% end %>

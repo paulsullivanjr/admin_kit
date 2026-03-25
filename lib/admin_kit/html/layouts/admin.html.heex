@@ -11,12 +11,22 @@
   <main class="ak-main">
     <div class="ak-flash-group">
       <%= if msg = Phoenix.Flash.get(@flash, :info) do %>
-        <div class="ak-flash ak-flash-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">
+        <div
+          class="ak-flash ak-flash-info"
+          role="alert"
+          phx-click="lv:clear-flash"
+          phx-value-key="info"
+        >
           <%= msg %>
         </div>
       <% end %>
       <%= if msg = Phoenix.Flash.get(@flash, :error) do %>
-        <div class="ak-flash ak-flash-error" role="alert" phx-click="lv:clear-flash" phx-value-key="error">
+        <div
+          class="ak-flash ak-flash-error"
+          role="alert"
+          phx-click="lv:clear-flash"
+          phx-value-key="error"
+        >
           <%= msg %>
         </div>
       <% end %>

@@ -29,7 +29,13 @@ defmodule AdminKit.FieldTypes.Boolean do
     ~H"""
     <label class="ak-checkbox-label">
       <input type="hidden" name={Phoenix.HTML.Form.input_name(@form, @field)} value="false" />
-      <input type="checkbox" name={Phoenix.HTML.Form.input_name(@form, @field)} value="true" checked={Phoenix.HTML.Form.input_value(@form, @field) == true} class="ak-checkbox" />
+      <input
+        type="checkbox"
+        name={Phoenix.HTML.Form.input_name(@form, @field)}
+        value="true"
+        checked={Phoenix.HTML.Form.input_value(@form, @field) == true}
+        class="ak-checkbox"
+      />
     </label>
     """
   end

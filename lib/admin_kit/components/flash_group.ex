@@ -7,12 +7,24 @@ defmodule AdminKit.Components.FlashGroup do
     ~H"""
     <div class="ak-flash-group">
       <%= if msg = Phoenix.Flash.get(@flash, :info) do %>
-        <div class="ak-flash ak-flash-info" role="alert" phx-click="dismiss" phx-value-key="info" phx-target={@myself}>
+        <div
+          class="ak-flash ak-flash-info"
+          role="alert"
+          phx-click="dismiss"
+          phx-value-key="info"
+          phx-target={@myself}
+        >
           <%= msg %>
         </div>
       <% end %>
       <%= if msg = Phoenix.Flash.get(@flash, :error) do %>
-        <div class="ak-flash ak-flash-error" role="alert" phx-click="dismiss" phx-value-key="error" phx-target={@myself}>
+        <div
+          class="ak-flash ak-flash-error"
+          role="alert"
+          phx-click="dismiss"
+          phx-value-key="error"
+          phx-target={@myself}
+        >
           <%= msg %>
         </div>
       <% end %>

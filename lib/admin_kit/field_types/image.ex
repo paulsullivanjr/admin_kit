@@ -30,7 +30,12 @@ defmodule AdminKit.FieldTypes.Image do
     assigns = %{form: form, field: field.name}
 
     ~H"""
-    <input type="file" name={Phoenix.HTML.Form.input_name(@form, @field)} accept="image/*" class="ak-input" />
+    <input
+      type="file"
+      name={Phoenix.HTML.Form.input_name(@form, @field)}
+      accept="image/*"
+      class="ak-input"
+    />
     """
   end
 end

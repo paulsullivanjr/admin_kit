@@ -7,13 +7,25 @@ defmodule AdminKit.Components.PaginationBar do
     ~H"""
     <%= if @total_pages > 1 do %>
       <nav class="ak-pagination" aria-label="Pagination">
-        <button phx-click="page" phx-value-page={@page - 1} phx-target={@myself} disabled={@page <= 1} class="ak-btn ak-btn-sm">
+        <button
+          phx-click="page"
+          phx-value-page={@page - 1}
+          phx-target={@myself}
+          disabled={@page <= 1}
+          class="ak-btn ak-btn-sm"
+        >
           &laquo; Prev
         </button>
         <span class="ak-pagination-info">
           Page <%= @page %> of <%= @total_pages %> (<%= @total_count %> total)
         </span>
-        <button phx-click="page" phx-value-page={@page + 1} phx-target={@myself} disabled={@page >= @total_pages} class="ak-btn ak-btn-sm">
+        <button
+          phx-click="page"
+          phx-value-page={@page + 1}
+          phx-target={@myself}
+          disabled={@page >= @total_pages}
+          class="ak-btn ak-btn-sm"
+        >
           Next &raquo;
         </button>
       </nav>

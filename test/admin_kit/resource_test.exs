@@ -17,7 +17,11 @@ defmodule AdminKit.ResourceTest do
 
     test "index_fields returns fields in declared order" do
       [user_config | _] = AdminKit.TestApp.Admin.__resources__()
-      user_config = if user_config.schema == AdminKit.TestApp.User, do: user_config, else: Enum.at(AdminKit.TestApp.Admin.__resources__(), 1)
+
+      user_config =
+        if user_config.schema == AdminKit.TestApp.User,
+          do: user_config,
+          else: Enum.at(AdminKit.TestApp.Admin.__resources__(), 1)
 
       index = ResourceConfig.index_fields(user_config)
       names = Enum.map(index, & &1.name)

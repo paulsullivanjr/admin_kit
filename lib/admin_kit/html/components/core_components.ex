@@ -9,12 +9,22 @@ defmodule AdminKit.HTML.CoreComponents do
     ~H"""
     <div class="ak-flash-group">
       <%= if msg = Phoenix.Flash.get(@flash, :info) do %>
-        <div class="ak-flash ak-flash-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">
+        <div
+          class="ak-flash ak-flash-info"
+          role="alert"
+          phx-click="lv:clear-flash"
+          phx-value-key="info"
+        >
           <%= msg %>
         </div>
       <% end %>
       <%= if msg = Phoenix.Flash.get(@flash, :error) do %>
-        <div class="ak-flash ak-flash-error" role="alert" phx-click="lv:clear-flash" phx-value-key="error">
+        <div
+          class="ak-flash ak-flash-error"
+          role="alert"
+          phx-click="lv:clear-flash"
+          phx-value-key="error"
+        >
           <%= msg %>
         </div>
       <% end %>
@@ -74,13 +84,23 @@ defmodule AdminKit.HTML.CoreComponents do
     ~H"""
     <%= if @total_pages > 1 do %>
       <nav class="ak-pagination" aria-label="Pagination">
-        <button phx-click="page" phx-value-page={@page - 1} disabled={@page <= 1} class="ak-btn ak-btn-sm">
+        <button
+          phx-click="page"
+          phx-value-page={@page - 1}
+          disabled={@page <= 1}
+          class="ak-btn ak-btn-sm"
+        >
           &laquo; Prev
         </button>
         <span class="ak-pagination-info">
           Page <%= @page %> of <%= @total_pages %> (<%= @total_count %> total)
         </span>
-        <button phx-click="page" phx-value-page={@page + 1} disabled={@page >= @total_pages} class="ak-btn ak-btn-sm">
+        <button
+          phx-click="page"
+          phx-value-page={@page + 1}
+          disabled={@page >= @total_pages}
+          class="ak-btn ak-btn-sm"
+        >
           Next &raquo;
         </button>
       </nav>

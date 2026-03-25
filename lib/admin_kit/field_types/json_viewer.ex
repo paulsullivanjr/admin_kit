@@ -44,7 +44,11 @@ defmodule AdminKit.FieldTypes.JsonViewer do
     assigns = %{form: form, field: field.name, value: text_value}
 
     ~H"""
-    <textarea name={Phoenix.HTML.Form.input_name(@form, @field)} rows="10" class="ak-input ak-textarea ak-code"><%= @value %></textarea>
+    <textarea
+      name={Phoenix.HTML.Form.input_name(@form, @field)}
+      rows="10"
+      class="ak-input ak-textarea ak-code"
+    ><%= @value %></textarea>
     """
   end
 end

@@ -44,7 +44,6 @@ defmodule AdminKit.Live.ResourceIndexLive do
           New <%= String.capitalize(@config.singular_name) %>
         </.link>
       </div>
-
       <!-- Scopes -->
       <%= if length(@config.scopes) > 0 do %>
         <div class="ak-scopes">
@@ -59,7 +58,6 @@ defmodule AdminKit.Live.ResourceIndexLive do
           <% end %>
         </div>
       <% end %>
-
       <!-- Search -->
       <%= if length(@config.searchable_fields) > 0 do %>
         <form phx-change="search" phx-submit="search" class="ak-search-form">
@@ -73,19 +71,24 @@ defmodule AdminKit.Live.ResourceIndexLive do
           />
         </form>
       <% end %>
-
       <!-- Data Table -->
       <table class="ak-table">
         <thead>
           <tr>
             <th class="ak-th ak-th-checkbox">
-              <input type="checkbox" phx-click="select_all" checked={all_selected?(@selected_ids, @resources)} />
+              <input
+                type="checkbox"
+                phx-click="select_all"
+                checked={all_selected?(@selected_ids, @resources)}
+              />
             </th>
             <%= for field <- ResourceConfig.index_fields(@config) do %>
               <th class="ak-th" phx-click="sort" phx-value-field={field.name}>
                 <%= AdminKit.Field.label(field) %>
                 <%= if @sort_by == field.name do %>
-                  <span class="ak-sort-indicator"><%= if @sort_dir == :asc, do: "▲", else: "▼" %></span>
+                  <span class="ak-sort-indicator">
+                    <%= if @sort_dir == :asc, do: "▲", else: "▼" %>
+                  </span>
                 <% end %>
               </th>
             <% end %>
@@ -96,7 +99,12 @@ defmodule AdminKit.Live.ResourceIndexLive do
           <%= for record <- @resources do %>
             <tr class={"ak-tr #{if Map.get(record, :id) in @selected_ids, do: "ak-tr-selected"}"}>
               <td class="ak-td">
-                <input type="checkbox" phx-click="select_row" phx-value-id={Map.get(record, :id)} checked={Map.get(record, :id) in @selected_ids} />
+                <input
+                  type="checkbox"
+                  phx-click="select_row"
+                  phx-value-id={Map.get(record, :id)}
+                  checked={Map.get(record, :id) in @selected_ids}
+                />
               </td>
               <%= for field <- ResourceConfig.index_fields(@config) do %>
                 <td class="ak-td">
@@ -104,13 +112,24 @@ defmodule AdminKit.Live.ResourceIndexLive do
                 </td>
               <% end %>
               <td class="ak-td ak-actions">
-                <.link navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}"} class="ak-action-link">
+                <.link
+                  navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}"}
+                  class="ak-action-link"
+                >
                   Show
                 </.link>
-                <.link navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}/edit"} class="ak-action-link">
+                <.link
+                  navigate={"/#{@config.plural_name}/#{Map.get(record, :id)}/edit"}
+                  class="ak-action-link"
+                >
                   Edit
                 </.link>
-                <button phx-click="delete" phx-value-id={Map.get(record, :id)} data-confirm="Are you sure?" class="ak-action-link ak-action-danger">
+                <button
+                  phx-click="delete"
+                  phx-value-id={Map.get(record, :id)}
+                  data-confirm="Are you sure?"
+                  class="ak-action-link ak-action-danger"
+                >
                   Delete
                 </button>
               </td>
@@ -118,17 +137,26 @@ defmodule AdminKit.Live.ResourceIndexLive do
           <% end %>
         </tbody>
       </table>
-
       <!-- Pagination -->
       <%= if @total_pages > 1 do %>
         <div class="ak-pagination">
-          <button phx-click="page" phx-value-page={@page - 1} disabled={@page <= 1} class="ak-btn ak-btn-sm">
+          <button
+            phx-click="page"
+            phx-value-page={@page - 1}
+            disabled={@page <= 1}
+            class="ak-btn ak-btn-sm"
+          >
             &laquo; Prev
           </button>
           <span class="ak-pagination-info">
             Page <%= @page %> of <%= @total_pages %> (<%= @total_count %> total)
           </span>
-          <button phx-click="page" phx-value-page={@page + 1} disabled={@page >= @total_pages} class="ak-btn ak-btn-sm">
+          <button
+            phx-click="page"
+            phx-value-page={@page + 1}
+            disabled={@page >= @total_pages}
+            class="ak-btn ak-btn-sm"
+          >
             Next &raquo;
           </button>
         </div>
@@ -243,5 +271,4 @@ defmodule AdminKit.Live.ResourceIndexLive do
     ids = MapSet.new(resources, &Map.get(&1, :id))
     MapSet.size(ids) > 0 and MapSet.equal?(selected, ids)
   end
-
 end
